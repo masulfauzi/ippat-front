@@ -97,6 +97,19 @@
             </div>
           </div>
 
+          <!-- Kategori Soal -->
+          <div>
+            <label class="block text-sm font-semibold text-slate-900 mb-2">
+              Kategori Soal (Opsional)
+            </label>
+            <SearchableSelect
+              :model-value="currentForm.id_kategori_soal"
+              @update:model-value="currentForm.id_kategori_soal = $event"
+              :options="kategoriSoalOptions"
+              placeholder="Cari kategori soal..." />
+            <p class="text-slate-500 text-sm mt-1">Menentukan bobot poin benar/salah untuk soal ini</p>
+          </div>
+
           <!-- Opsi Jawaban Grid -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div v-for="opsiKey in ['opsi_a', 'opsi_b', 'opsi_c', 'opsi_d', 'opsi_e']" :key="opsiKey">
@@ -225,9 +238,11 @@ import { onMounted, ref, computed, reactive, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useBankSoalStore } from '@/stores/bankSoal'
 import { useSoalStore } from '@/stores/soal'
+import { useKategoriSoalStore } from '@/stores/kategoriSoal'
 import { soalService } from '@/services/soalService'
 import SideBar from '@/components/SideBar.vue'
 import TopAppBar from '@/components/TopAppBar.vue'
+import SearchableSelect from '@/components/SearchableSelect.vue'
 import Quill from 'quill'
 import 'quill/dist/quill.snow.css'
 
@@ -235,6 +250,7 @@ const route = useRoute()
 const router = useRouter()
 const bankSoalStore = useBankSoalStore()
 const soalStore = useSoalStore()
+const kategoriSoalStore = useKategoriSoalStore()
 const bankSoalId = route.params.id
 
 const currentSoalNumber = ref(1)
@@ -247,6 +263,14 @@ const quillEditor = ref(null)
 
 const bankSoalDetail = computed(() => bankSoalStore.selectedSoal)
 const totalSoal = computed(() => bankSoalDetail.value?.jml_soal || 0)
+
+const kategoriSoals = computed(() => kategoriSoalStore.kategoriSoals)
+const kategoriSoalOptions = computed(() =>
+  kategoriSoals.value.map(kategori => ({
+    id: kategori.id,
+    label: `${kategori.kategori} (Benar: ${kategori.benar}, Salah: ${kategori.salah})`
+  }))
+)
 
 const currentForm = computed({
   get: () => soalList[currentSoalNumber.value] || getEmptyForm(),
@@ -262,6 +286,7 @@ const errors = reactive({
 onMounted(async () => {
   try {
     await bankSoalStore.fetchSoalById(bankSoalId)
+    await kategoriSoalStore.fetchKategoriSoalList(1, 100)
 
     // Initialize all soals with empty forms
     for (let i = 1; i <= totalSoal.value; i++) {
@@ -283,6 +308,7 @@ onMounted(async () => {
           const soalData = {
             id: soal.id,
             no_soal: soal.no_soal,
+            id_kategori_soal: soal.id_kategori_soal || '',
             soal: soal.soal || '',
             gambar_soal: soal.gambar_soal || null,
             opsi_a: soal.opsi_a || '',
@@ -316,6 +342,7 @@ onMounted(async () => {
 })
 
 const getEmptyForm = () => ({
+  id_kategori_soal: '',
   soal: '',
   gambar_soal: null,
   opsi_a: '',
@@ -455,6 +482,9 @@ const handleSave = async () => {
     // Append soal data
     formData.append('id_bank_soal', bankSoalId)
     formData.append('no_soal', currentSoalNumber.value)
+    if (currentForm.value.id_kategori_soal) {
+      formData.append('id_kategori_soal', currentForm.value.id_kategori_soal)
+    }
     formData.append('soal', currentForm.value.soal || '')
     formData.append('opsi_a', currentForm.value.opsi_a || '')
     formData.append('opsi_b', currentForm.value.opsi_b || '')
@@ -524,6 +554,9 @@ const handleSaveAndNext = async () => {
     // Append soal data
     formData.append('id_bank_soal', bankSoalId)
     formData.append('no_soal', currentSoalNumber.value)
+    if (currentForm.value.id_kategori_soal) {
+      formData.append('id_kategori_soal', currentForm.value.id_kategori_soal)
+    }
     formData.append('soal', currentForm.value.soal || '')
     formData.append('opsi_a', currentForm.value.opsi_a || '')
     formData.append('opsi_b', currentForm.value.opsi_b || '')

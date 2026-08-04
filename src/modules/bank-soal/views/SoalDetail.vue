@@ -91,8 +91,13 @@
             <div v-else class="space-y-4">
               <div v-for="(soal, index) in sortedSoals" :key="soal.id" class="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors">
                 <!-- Soal Number -->
-                <div class="text-sm font-semibold text-slate-600 mb-2">
-                  Soal {{ soal.no_soal }}
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-sm font-semibold text-slate-600">
+                    Soal {{ soal.no_soal }}
+                  </span>
+                  <span v-if="kategoriSoalLabel(soal.id_kategori_soal)" class="bg-sky-50 text-sky-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                    {{ kategoriSoalLabel(soal.id_kategori_soal) }}
+                  </span>
                 </div>
 
                 <!-- Pertanyaan -->
@@ -252,6 +257,7 @@ import { useBankSoalStore } from '@/stores/bankSoal'
 import { useDialog } from '@/composables/useDialog'
 import { useMapelStore } from '@/stores/mapel'
 import { useSoalStore } from '@/stores/soal'
+import { useKategoriSoalStore } from '@/stores/kategoriSoal'
 import { soalService } from '@/services/soalService'
 
 const route = useRoute()
@@ -260,6 +266,7 @@ const bankSoalStore = useBankSoalStore()
 const mapelStore = useMapelStore()
 const { $alert } = useDialog()
 const soalStore = useSoalStore()
+const kategoriSoalStore = useKategoriSoalStore()
 const soalId = route.params.id
 
 const error = ref(null)
@@ -284,9 +291,16 @@ const isSoalLoading = computed(() => soalStore.isLoading)
 const soalError = computed(() => soalStore.error)
 const totalPages = computed(() => soalStore.totalPages)
 
+const kategoriSoalLabel = (id) => {
+  if (!id) return ''
+  const kategori = kategoriSoalStore.kategoriSoals.find(k => k.id === id)
+  return kategori ? kategori.kategori : ''
+}
+
 onMounted(async () => {
   try {
     await mapelStore.fetchMapelList(1, 100)
+    await kategoriSoalStore.fetchKategoriSoalList(1, 100)
     await bankSoalStore.fetchSoalById(soalId)
     await soalStore.fetchSoalByBankId(soalId, 1)
   } catch (err) {
