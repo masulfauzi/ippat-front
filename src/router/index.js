@@ -3,6 +3,7 @@ import { dashboardRoutes } from '../modules/dashboard/routes'
 import { authRoutes } from '../modules/auth/routes'
 import { bankSoalRoutes } from '../modules/bank-soal/routes'
 import { mapelRoutes } from '../modules/mapel/routes'
+import { kategoriSoalRoutes } from '../modules/kategori-soal/routes'
 import { jurusanRoutes } from '../modules/jurusan/routes'
 import { kelasRoutes } from '../modules/kelas/routes'
 import { pesertaRoutes } from '../modules/peserta/routes'
@@ -16,6 +17,7 @@ const routes = [
     ...dashboardRoutes,
     ...bankSoalRoutes,
     ...mapelRoutes,
+    ...kategoriSoalRoutes,
     ...jurusanRoutes,
     ...kelasRoutes,
     ...pesertaRoutes,
