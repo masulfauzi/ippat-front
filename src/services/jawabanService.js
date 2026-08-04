@@ -35,4 +35,14 @@ export const jawabanService = {
       throw error
     }
   },
+
+  // DELETE isi jawaban (batalkan pilihan) tanpa menghapus baris soal, agar terhindar dari penalti -1
+  deleteJawabanAnswer: async (jawabanId) => {
+    try {
+      const response = await api.delete(`/jawaban/${jawabanId}/jawaban`)
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
 }

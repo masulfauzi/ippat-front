@@ -209,6 +209,17 @@
                                     </div>
                                 </div>
 
+                                <!-- Tombol Batalkan Jawaban -->
+                                <div v-if="selectedAnswers[currentQuestion.id]" class="flex justify-end -mt-4 mb-6">
+                                    <button
+                                        @click="batalkanJawaban"
+                                        :disabled="isCancellingAnswer"
+                                        class="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2 text-sm font-semibold">
+                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        {{ isCancellingAnswer ? 'Membatalkan...' : 'Batalkan Jawaban' }}
+                                    </button>
+                                </div>
+
                                 <!-- Navigation Buttons -->
                                 <div class="flex gap-3 pt-6 border-t border-slate-200">
                                     <!-- Tombol Sebelumnya -->
@@ -425,6 +436,7 @@ const isSubmitting = ref(false)
 const timeRemaining = ref(0)
 const timerInterval = ref(null)
 const savingAnswers = ref({})
+const isCancellingAnswer = ref(false)
 const saveError = ref(null)
 const showSoalModal = ref(false)
 const isLoggingOut = ref(false)
@@ -533,6 +545,32 @@ async function selectAnswer(option) {
         saveError.value = `Gagal menyimpan jawaban: ${err.response?.data?.message || err.message}`
     } finally {
         savingAnswers.value[soalId] = false
+    }
+}
+
+async function batalkanJawaban() {
+    if (!currentQuestion.value || isCancellingAnswer.value) return
+    const soalId = currentQuestion.value.id
+    const jawabanRecord = jawabanRecords.value[soalId]
+
+    if (!jawabanRecord?.id || !selectedAnswers.value[soalId]) return
+
+    const ok = await $confirm(
+        'Yakin ingin membatalkan jawaban untuk soal ini? Soal akan kembali berstatus belum dijawab (nilai 0, bukan -1) dan Anda tetap bisa memilih jawaban lain nanti.',
+        { title: 'Batalkan Jawaban' }
+    )
+    if (!ok) return
+
+    isCancellingAnswer.value = true
+    saveError.value = null
+
+    try {
+        await jawabanService.deleteJawabanAnswer(jawabanRecord.id)
+        delete selectedAnswers.value[soalId]
+    } catch (err) {
+        saveError.value = `Gagal membatalkan jawaban: ${err.response?.data?.message || err.message}`
+    } finally {
+        isCancellingAnswer.value = false
     }
 }
 
