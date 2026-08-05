@@ -100,13 +100,15 @@
           <!-- Kategori Soal -->
           <div>
             <label class="block text-sm font-semibold text-slate-900 mb-2">
-              Kategori Soal (Opsional)
+              Kategori Soal <span class="text-red-600">*</span>
             </label>
             <SearchableSelect
               :model-value="currentForm.id_kategori_soal"
-              @update:model-value="currentForm.id_kategori_soal = $event"
+              @update:model-value="currentForm.id_kategori_soal = $event; validateField('id_kategori_soal')"
               :options="kategoriSoalOptions"
-              placeholder="Cari kategori soal..." />
+              placeholder="Cari kategori soal..."
+              :has-error="!!errors.id_kategori_soal" />
+            <p v-if="errors.id_kategori_soal" class="text-red-600 text-sm mt-1">{{ errors.id_kategori_soal }}</p>
             <p class="text-slate-500 text-sm mt-1">Menentukan bobot poin benar/salah untuk soal ini</p>
           </div>
 
@@ -280,7 +282,8 @@ const currentForm = computed({
 })
 
 const errors = reactive({
-  kunci: ''
+  kunci: '',
+  id_kategori_soal: ''
 })
 
 onMounted(async () => {
@@ -388,8 +391,11 @@ const initializeQuill = async () => {
 }
 
 const validateField = (field) => {
-  if (field !== 'kunci') return
-  errors.kunci = currentForm.value.kunci ? '' : 'Kunci Jawaban wajib dipilih'
+  if (field === 'kunci') {
+    errors.kunci = currentForm.value.kunci ? '' : 'Kunci Jawaban wajib dipilih'
+  } else if (field === 'id_kategori_soal') {
+    errors.id_kategori_soal = currentForm.value.id_kategori_soal ? '' : 'Kategori Soal wajib dipilih'
+  }
 }
 
 const validateForm = () => {
@@ -398,8 +404,9 @@ const validateForm = () => {
   }
 
   validateField('kunci')
+  validateField('id_kategori_soal')
 
-  return !errors.kunci
+  return !errors.kunci && !errors.id_kategori_soal
 }
 
 const switchSoal = async (soalNum) => {
@@ -482,9 +489,7 @@ const handleSave = async () => {
     // Append soal data
     formData.append('id_bank_soal', bankSoalId)
     formData.append('no_soal', currentSoalNumber.value)
-    if (currentForm.value.id_kategori_soal) {
-      formData.append('id_kategori_soal', currentForm.value.id_kategori_soal)
-    }
+    formData.append('id_kategori_soal', currentForm.value.id_kategori_soal)
     formData.append('soal', currentForm.value.soal || '')
     formData.append('opsi_a', currentForm.value.opsi_a || '')
     formData.append('opsi_b', currentForm.value.opsi_b || '')
@@ -554,9 +559,7 @@ const handleSaveAndNext = async () => {
     // Append soal data
     formData.append('id_bank_soal', bankSoalId)
     formData.append('no_soal', currentSoalNumber.value)
-    if (currentForm.value.id_kategori_soal) {
-      formData.append('id_kategori_soal', currentForm.value.id_kategori_soal)
-    }
+    formData.append('id_kategori_soal', currentForm.value.id_kategori_soal)
     formData.append('soal', currentForm.value.soal || '')
     formData.append('opsi_a', currentForm.value.opsi_a || '')
     formData.append('opsi_b', currentForm.value.opsi_b || '')
