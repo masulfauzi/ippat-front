@@ -29,6 +29,25 @@ export const nilaiService = {
     }
   },
 
+  getNilaiByPeserta: async (idPeserta, page = 1, pageSize = 10) => {
+    try {
+      const params = { page, page_size: pageSize }
+      const response = await api.get(`/nilai/peserta/${idPeserta}`, { params })
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
+
+  getNilaiById: async (id) => {
+    try {
+      const response = await api.get(`/nilai/${id}`)
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
+
   exportNilai: async (idJadwal) => {
     try {
       const response = await api.get(`/nilai/export/${idJadwal}`, {

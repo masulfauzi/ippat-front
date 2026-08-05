@@ -9,6 +9,7 @@ import { kelasRoutes } from '../modules/kelas/routes'
 import { pesertaRoutes } from '../modules/peserta/routes'
 import { jadwalRoutes } from '../modules/jadwal/routes'
 import { jadwalPesertaRoutes } from '../modules/jadwal-peserta/routes'
+import { hasilUjianRoutes } from '../modules/hasil-ujian/routes'
 import { nilaiRoutes } from '../modules/nilai/routes'
 import { setupAuthGuards } from './guards'
 
@@ -23,6 +24,7 @@ const routes = [
     ...pesertaRoutes,
     ...jadwalRoutes,
     ...jadwalPesertaRoutes,
+    ...hasilUjianRoutes,
     ...nilaiRoutes,
     ...authRoutes,
     { path: '/:pathMatch(.*)*', redirect: '/dashboard' },

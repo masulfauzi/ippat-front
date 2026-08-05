@@ -33,5 +33,5 @@ import AppDialog from '@/components/AppDialog.vue'
 
 const route = useRoute()
 const isLoginPage = computed(() => route.path === '/login')
-const isDashboardPage = computed(() => route.path.startsWith('/dashboard') || route.path.startsWith('/admin') || route.path.startsWith('/schedule') || route.path.startsWith('/ujian'))
+const isDashboardPage = computed(() => route.path.startsWith('/dashboard') || route.path.startsWith('/admin') || route.path.startsWith('/schedule') || route.path.startsWith('/ujian') || route.path.startsWith('/hasil-ujian'))
 </script>
