@@ -1,13 +1,5 @@
 <template>
     <div class="bg-surface min-h-screen">
-        <!-- User Info (Top Right) -->
-        <div class="fixed top-6 right-6 z-40 flex items-center gap-4 bg-white rounded-2xl px-6 py-3 shadow-lg border border-slate-100">
-            <div class="text-right">
-                <p class="text-sm font-semibold text-slate-800">{{ authStore.displayName }}</p>
-                <p class="text-xs text-slate-500">Peserta Ujian</p>
-            </div>
-        </div>
-
         <main class="py-8 px-6 min-h-screen">
             <div class="max-w-6xl mx-auto">
 
@@ -465,7 +457,6 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useDialog } from '@/composables/useDialog'
-import { useAuthStore } from '@/stores/auth'
 import { jawabanService } from '@/services/jawabanService'
 import { nilaiService } from '@/services/nilaiService'
 import { soalService } from '@/services/soalService'
@@ -475,7 +466,6 @@ import { bankSoalService } from '@/services/bankSoalService'
 const route = useRoute()
 const router = useRouter()
 const { $alert, $confirm } = useDialog()
-const authStore = useAuthStore()
 
 const nilaiData = ref(null)
 const questions = ref([])
