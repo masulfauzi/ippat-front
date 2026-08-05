@@ -384,6 +384,47 @@
                             </div>
                         </Transition>
                     </Teleport>
+
+                    <!-- Modal Hasil Ujian -->
+                    <Teleport to="body">
+                        <Transition name="modal-fade">
+                            <div
+                                v-if="showResultModal"
+                                class="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                                <div class="bg-white w-full max-w-md rounded-3xl p-8 text-center shadow-2xl">
+                                    <span
+                                        class="material-symbols-outlined text-[64px] block mb-4"
+                                        :class="examResult.lulus ? 'text-green-500' : examResult.lulus === false ? 'text-red-500' : 'text-slate-400'">
+                                        {{ examResult.lulus ? 'celebration' : examResult.lulus === false ? 'sentiment_dissatisfied' : 'task_alt' }}
+                                    </span>
+
+                                    <h3
+                                        class="font-h2 text-h2 mb-2"
+                                        :class="examResult.lulus ? 'text-green-600' : examResult.lulus === false ? 'text-red-600' : 'text-on-surface'">
+                                        <template v-if="examResult.lulus === true">Selamat Anda Lulus</template>
+                                        <template v-else-if="examResult.lulus === false">Maaf Anda Belum Lulus</template>
+                                        <template v-else>Ujian Selesai</template>
+                                    </h3>
+
+                                    <p class="text-slate-500 mb-6">Ujian Anda telah selesai. Berikut hasilnya:</p>
+
+                                    <div class="bg-slate-50 rounded-2xl p-6 mb-6">
+                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Nilai Anda</p>
+                                        <p class="text-5xl font-black text-on-surface mb-3">{{ examResult.nilai }}</p>
+                                        <p v-if="examResult.nilaiMinimal !== null" class="text-sm text-slate-500">
+                                            Nilai minimal kelulusan: <span class="font-bold text-slate-700">{{ examResult.nilaiMinimal }}</span>
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        @click="handleResultModalClose"
+                                        class="w-full px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-colors">
+                                        Kembali ke Dashboard
+                                    </button>
+                                </div>
+                            </div>
+                        </Transition>
+                    </Teleport>
                 </template>
 
             </div>
@@ -419,6 +460,7 @@ import { jawabanService } from '@/services/jawabanService'
 import { nilaiService } from '@/services/nilaiService'
 import { soalService } from '@/services/soalService'
 import { jadwalService } from '@/services/jadwalService'
+import { bankSoalService } from '@/services/bankSoalService'
 
 const route = useRoute()
 const router = useRouter()
@@ -440,6 +482,8 @@ const isCancellingAnswer = ref(false)
 const saveError = ref(null)
 const showSoalModal = ref(false)
 const isLoggingOut = ref(false)
+const showResultModal = ref(false)
+const examResult = ref({ nilai: 0, nilaiMinimal: null, lulus: null })
 
 let jadwal = history.state?.jadwal || null
 const nilai = history.state?.nilai
@@ -636,21 +680,43 @@ async function selesaiUjian(force = false) {
 
     try {
         const now = toLocalString(new Date())
-        await nilaiService.selesaiUjian(nilai.id, {
+        const result = await nilaiService.selesaiUjian(nilai.id, {
             aktivitas_terakhir: now,
             wkt_selesai: now,
         })
 
         if (timerInterval.value) clearInterval(timerInterval.value)
 
-        await $alert('Ujian Anda telah selesai! Terima kasih.', { title: 'Ujian Selesai', type: 'success' })
-        router.push({ name: 'dashboard.home' })
+        const skor = Number(result?.data?.nilai ?? 0)
+        let nilaiMinimal = null
+
+        try {
+            const idBankSoal = jadwal?.id_bank_soal
+            if (idBankSoal) {
+                const bankSoalRes = await bankSoalService.getSoalById(idBankSoal)
+                nilaiMinimal = Number(bankSoalRes?.data?.nilai_minimal_kelulusan ?? 0)
+            }
+        } catch (e) {
+            console.warn('Gagal memuat nilai minimal kelulusan:', e)
+        }
+
+        examResult.value = {
+            nilai: skor,
+            nilaiMinimal,
+            lulus: nilaiMinimal !== null ? skor >= nilaiMinimal : null,
+        }
+        showResultModal.value = true
     } catch (err) {
         const message = err.response?.data?.message || err.message
         await $alert(`Gagal menyelesaikan ujian: ${message}`, { title: 'Gagal', type: 'error' })
     } finally {
         isSubmitting.value = false
     }
+}
+
+function handleResultModalClose() {
+    showResultModal.value = false
+    router.push({ name: 'dashboard.home' })
 }
 
 function initializeTimer() {
