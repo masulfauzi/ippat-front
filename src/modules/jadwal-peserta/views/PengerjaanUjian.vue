@@ -209,15 +209,32 @@
                                     </div>
                                 </div>
 
-                                <!-- Tombol Batalkan Jawaban -->
-                                <div v-if="selectedAnswers[currentQuestion.id]" class="flex justify-end -mt-4 mb-6">
+                                <!-- Tombol Hapus Jawaban -->
+                                <div v-if="selectedAnswers[currentQuestion.id]" class="flex flex-col items-end gap-2 -mt-4 mb-6">
                                     <button
-                                        @click="batalkanJawaban"
+                                        v-if="!showDeleteConfirm"
+                                        @click="showDeleteConfirm = true"
                                         :disabled="isCancellingAnswer"
                                         class="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2 text-sm font-semibold">
                                         <span class="material-symbols-outlined text-[18px]">delete</span>
-                                        {{ isCancellingAnswer ? 'Membatalkan...' : 'Batalkan Jawaban' }}
+                                        Hapus Jawaban
                                     </button>
+
+                                    <div v-else class="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                                        <span class="text-sm text-red-700 font-medium">Yakin ingin menghapus jawaban ini?</span>
+                                        <button
+                                            @click="batalkanJawaban"
+                                            :disabled="isCancellingAnswer"
+                                            class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+                                            {{ isCancellingAnswer ? 'Menghapus...' : 'Ya, Hapus' }}
+                                        </button>
+                                        <button
+                                            @click="showDeleteConfirm = false"
+                                            :disabled="isCancellingAnswer"
+                                            class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 text-sm font-semibold rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+                                            Batal
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <!-- Navigation Buttons -->
@@ -479,6 +496,7 @@ const timeRemaining = ref(0)
 const timerInterval = ref(null)
 const savingAnswers = ref({})
 const isCancellingAnswer = ref(false)
+const showDeleteConfirm = ref(false)
 const saveError = ref(null)
 const showSoalModal = ref(false)
 const isLoggingOut = ref(false)
@@ -599,38 +617,36 @@ async function batalkanJawaban() {
 
     if (!jawabanRecord?.id || !selectedAnswers.value[soalId]) return
 
-    const ok = await $confirm(
-        'Yakin ingin membatalkan jawaban untuk soal ini? Soal akan kembali berstatus belum dijawab (nilai 0, bukan -1) dan Anda tetap bisa memilih jawaban lain nanti.',
-        { title: 'Batalkan Jawaban' }
-    )
-    if (!ok) return
-
     isCancellingAnswer.value = true
     saveError.value = null
 
     try {
         await jawabanService.deleteJawabanAnswer(jawabanRecord.id)
         delete selectedAnswers.value[soalId]
+        showDeleteConfirm.value = false
     } catch (err) {
-        saveError.value = `Gagal membatalkan jawaban: ${err.response?.data?.message || err.message}`
+        saveError.value = `Gagal menghapus jawaban: ${err.response?.data?.message || err.message}`
     } finally {
         isCancellingAnswer.value = false
     }
 }
 
 function previousQuestion() {
+    showDeleteConfirm.value = false
     if (currentQuestionIndex.value > 0) {
         currentQuestionIndex.value--
     }
 }
 
 function nextQuestion() {
+    showDeleteConfirm.value = false
     if (currentQuestionIndex.value < totalQuestions.value - 1) {
         currentQuestionIndex.value++
     }
 }
 
 function goToQuestion(index) {
+    showDeleteConfirm.value = false
     currentQuestionIndex.value = index
 }
 
