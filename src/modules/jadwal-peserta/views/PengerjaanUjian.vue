@@ -391,7 +391,7 @@
                             <div
                                 v-if="showResultModal"
                                 class="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                                <div class="bg-white w-full max-w-xl rounded-3xl p-8 md:p-10 text-center shadow-2xl">
+                                <div class="bg-white w-full max-w-2xl rounded-3xl p-8 md:p-10 text-center shadow-2xl">
                                     <span
                                         class="material-symbols-outlined text-[64px] block mb-4"
                                         :class="examResult.lulus ? 'text-green-500' : examResult.lulus === false ? 'text-red-500' : 'text-slate-400'">
