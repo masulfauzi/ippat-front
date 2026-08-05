@@ -82,6 +82,23 @@
             <p v-if="errors.jml_soal" class="text-red-600 text-sm mt-1">{{ errors.jml_soal }}</p>
           </div>
 
+          <!-- Nilai Minimal Kelulusan -->
+          <div>
+            <label class="block text-sm font-semibold text-slate-900 mb-2">
+              Nilai Minimal Kelulusan <span class="text-red-600">*</span>
+            </label>
+            <input
+              v-model.number="formData.nilai_minimal_kelulusan"
+              @blur="validateNilaiMinimalKelulusan"
+              type="number"
+              placeholder="Contoh: 70"
+              min="0"
+              class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+              :class="{ 'border-red-500 focus:ring-red-500': errors.nilai_minimal_kelulusan }">
+            <p v-if="errors.nilai_minimal_kelulusan" class="text-red-600 text-sm mt-1">{{ errors.nilai_minimal_kelulusan }}</p>
+            <p class="text-slate-500 text-sm mt-1">Nilai minimum yang harus dicapai peserta agar dinyatakan lulus</p>
+          </div>
+
           <!-- Pilihan Ganda Section -->
           <div v-if="formData.tipe_soal === 'pilihan_ganda'" class="border-t pt-6">
             <h3 class="text-lg font-semibold text-slate-900 mb-4">Pilihan Jawaban</h3>
@@ -197,6 +214,7 @@ const formData = reactive({
   nama_bank_soal: '',
   id_mapel: '',
   jml_soal: '',
+  nilai_minimal_kelulusan: '',
   tipe_soal: 'pilihan_ganda',
   pertanyaan: 'Bank Soal',
   tingkat_kesulitan: 'sedang',
@@ -210,6 +228,7 @@ const errors = reactive({
   nama_bank_soal: '',
   id_mapel: '',
   jml_soal: '',
+  nilai_minimal_kelulusan: '',
   tipe_soal: '',
   pertanyaan: '',
   tingkat_kesulitan: '',
@@ -227,6 +246,9 @@ onMounted(async () => {
       formData.nama_bank_soal = soal.nama_bank_soal || ''
       formData.id_mapel = String(soal.id_mapel ?? soal.mapel_id ?? '')
       formData.jml_soal = soal.jml_soal ? Number(soal.jml_soal) : ''
+      formData.nilai_minimal_kelulusan = soal.nilai_minimal_kelulusan !== undefined && soal.nilai_minimal_kelulusan !== null
+        ? Number(soal.nilai_minimal_kelulusan)
+        : ''
       formData.tipe_soal = soal.tipe_soal
       formData.pertanyaan = soal.pertanyaan
       formData.tingkat_kesulitan = soal.tingkat_kesulitan
@@ -296,11 +318,21 @@ const validatePilihanJawaban = () => {
   return true
 }
 
+const validateNilaiMinimalKelulusan = () => {
+  errors.nilai_minimal_kelulusan = ''
+  if (formData.nilai_minimal_kelulusan === '' || formData.nilai_minimal_kelulusan === null) {
+    errors.nilai_minimal_kelulusan = 'Nilai minimal kelulusan wajib diisi'
+  } else if (formData.nilai_minimal_kelulusan < 0) {
+    errors.nilai_minimal_kelulusan = 'Nilai minimal kelulusan tidak boleh kurang dari 0'
+  }
+}
+
 const validateForm = () => {
   validateNamaBankSoal()
   validateMapel()
   validateJmlSoal()
-  return !errors.nama_bank_soal && !errors.id_mapel && !errors.jml_soal
+  validateNilaiMinimalKelulusan()
+  return !errors.nama_bank_soal && !errors.id_mapel && !errors.jml_soal && !errors.nilai_minimal_kelulusan
 }
 
 const getTipeSoalLabel = (tipe) => {
@@ -325,7 +357,8 @@ const handleSubmit = async () => {
     const payload = {
       nama_bank_soal: formData.nama_bank_soal.trim(),
       id_mapel: formData.id_mapel,
-      jml_soal: parseInt(formData.jml_soal)
+      jml_soal: parseInt(formData.jml_soal),
+      nilai_minimal_kelulusan: parseInt(formData.nilai_minimal_kelulusan)
     }
 
     await bankSoalStore.updateSoal(soalId, payload)

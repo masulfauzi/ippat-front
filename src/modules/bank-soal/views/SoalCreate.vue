@@ -74,6 +74,23 @@
             <p v-if="errors.jml_soal" class="text-red-600 text-sm mt-1">{{ errors.jml_soal }}</p>
           </div>
 
+          <!-- Nilai Minimal Kelulusan -->
+          <div>
+            <label class="block text-sm font-semibold text-slate-900 mb-2">
+              Nilai Minimal Kelulusan <span class="text-red-600">*</span>
+            </label>
+            <input
+              v-model.number="formData.nilai_minimal_kelulusan"
+              @blur="validateNilaiMinimalKelulusan"
+              type="number"
+              placeholder="Contoh: 70"
+              min="0"
+              class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+              :class="{ 'border-red-500 focus:ring-red-500': errors.nilai_minimal_kelulusan }">
+            <p v-if="errors.nilai_minimal_kelulusan" class="text-red-600 text-sm mt-1">{{ errors.nilai_minimal_kelulusan }}</p>
+            <p class="text-slate-500 text-sm mt-1">Nilai minimum yang harus dicapai peserta agar dinyatakan lulus</p>
+          </div>
+
           <!-- Action Buttons -->
           <div class="flex gap-3 pt-4 border-t">
             <button
@@ -114,13 +131,15 @@ const error = ref(null)
 const formData = reactive({
   nama_bank_soal: '',
   mapel_id: '',
-  jml_soal: ''
+  jml_soal: '',
+  nilai_minimal_kelulusan: ''
 })
 
 const errors = reactive({
   nama_bank_soal: '',
   mapel_id: '',
-  jml_soal: ''
+  jml_soal: '',
+  nilai_minimal_kelulusan: ''
 })
 
 onMounted(async () => {
@@ -159,11 +178,21 @@ const validateJmlSoal = () => {
   }
 }
 
+const validateNilaiMinimalKelulusan = () => {
+  errors.nilai_minimal_kelulusan = ''
+  if (formData.nilai_minimal_kelulusan === '' || formData.nilai_minimal_kelulusan === null) {
+    errors.nilai_minimal_kelulusan = 'Nilai minimal kelulusan wajib diisi'
+  } else if (formData.nilai_minimal_kelulusan < 0) {
+    errors.nilai_minimal_kelulusan = 'Nilai minimal kelulusan tidak boleh kurang dari 0'
+  }
+}
+
 const validateForm = () => {
   validateNamaBankSoal()
   validateMapel()
   validateJmlSoal()
-  return !errors.nama_bank_soal && !errors.mapel_id && !errors.jml_soal
+  validateNilaiMinimalKelulusan()
+  return !errors.nama_bank_soal && !errors.mapel_id && !errors.jml_soal && !errors.nilai_minimal_kelulusan
 }
 
 const handleSubmit = async () => {
@@ -179,7 +208,8 @@ const handleSubmit = async () => {
     const payload = {
       nama_bank_soal: formData.nama_bank_soal.trim(),
       id_mapel: formData.mapel_id,
-      jml_soal: parseInt(formData.jml_soal)
+      jml_soal: parseInt(formData.jml_soal),
+      nilai_minimal_kelulusan: parseInt(formData.nilai_minimal_kelulusan)
     }
 
     await bankSoalStore.createSoal(payload)

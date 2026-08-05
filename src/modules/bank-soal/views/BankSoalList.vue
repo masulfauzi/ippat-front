@@ -125,6 +125,7 @@
                 <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Nama Bank Soal</th>
                 <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Mata Pelajaran</th>
                 <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Jumlah Soal</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Nilai Minimal Kelulusan</th>
                 <th class="px-6 py-3 text-center text-xs font-semibold text-slate-600 uppercase">Aksi</th>
               </tr>
             </thead>
@@ -141,6 +142,9 @@
                 </td>
                 <td class="px-6 py-4 text-slate-600">
                   {{ soal.jml_soal }}
+                </td>
+                <td class="px-6 py-4 text-slate-600">
+                  {{ soal.nilai_minimal_kelulusan ?? '-' }}
                 </td>
                 <td class="px-6 py-4 text-center">
                   <div class="flex items-center justify-center gap-2">

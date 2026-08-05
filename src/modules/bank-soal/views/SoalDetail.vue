@@ -43,6 +43,12 @@
                 <p class="text-xs text-slate-500 uppercase font-semibold mb-1">Jumlah Soal</p>
                 <p class="text-lg font-semibold text-slate-900">{{ selectedSoal.jml_soal || '-' }} Soal</p>
               </div>
+
+              <!-- Nilai Minimal Kelulusan -->
+              <div class="border-l-4 border-emerald-500 pl-4">
+                <p class="text-xs text-slate-500 uppercase font-semibold mb-1">Nilai Minimal Kelulusan</p>
+                <p class="text-lg font-semibold text-slate-900">{{ selectedSoal.nilai_minimal_kelulusan ?? '-' }}</p>
+              </div>
             </div>
           </div>
 
