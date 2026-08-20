@@ -88,12 +88,12 @@
                   <td class="px-6 py-4 text-slate-600 text-sm">{{ formatDateTime(nilai.wkt_selesai) }}</td>
                   <td class="px-6 py-4 text-center">
                     <span
-                      :class="nilai.nilai >= 75 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
+                      :class="isLulus(nilai.status_kelulusan) ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
                       class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold">
                       <span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">
-                        {{ nilai.nilai >= 75 ? 'check_circle' : 'cancel' }}
+                        {{ isLulus(nilai.status_kelulusan) ? 'check_circle' : 'cancel' }}
                       </span>
-                      {{ nilai.nilai >= 75 ? 'Lulus' : 'Tidak Lulus' }}
+                      {{ formatStatusKelulusan(nilai.status_kelulusan) }}
                     </span>
                   </td>
                 </tr>
@@ -231,6 +231,13 @@ const handleExport = async () => {
   } finally {
     isExporting.value = false
   }
+}
+
+const isLulus = (statusKelulusan) => statusKelulusan?.toUpperCase() === 'LULUS'
+
+const formatStatusKelulusan = (statusKelulusan) => {
+  if (!statusKelulusan) return '-'
+  return isLulus(statusKelulusan) ? 'Lulus' : 'Tidak Lulus'
 }
 
 const formatDateTime = (dateTime) => {
