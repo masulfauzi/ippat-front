@@ -75,6 +75,15 @@
                     <div class="bg-white rounded-3xl p-8 shadow-[0_10px_30px_rgba(0,0,0,0.02)] border border-sky-50 text-center">
                         <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Poin Akhir</p>
                         <p class="text-5xl font-black text-on-surface">{{ nilaiData?.nilai ?? '-' }}</p>
+                        <span
+                            v-if="nilaiData?.status_kelulusan"
+                            class="inline-flex items-center gap-1 mt-4 px-3 py-1.5 rounded-full text-sm font-bold"
+                            :class="isLulus ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+                            <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">
+                                {{ isLulus ? 'check_circle' : 'cancel' }}
+                            </span>
+                            {{ isLulus ? 'Lulus' : 'Tidak Lulus' }}
+                        </span>
                     </div>
                 </template>
 
@@ -106,6 +115,8 @@ const summary = computed(() => {
     const tidakTerjawab = jawabanList.value.length - terjawab
     return { terjawab, tidakTerjawab, benar, salah }
 })
+
+const isLulus = computed(() => nilaiData.value?.status_kelulusan?.toUpperCase() === 'LULUS')
 
 onMounted(async () => {
     const idNilai = route.params.id
