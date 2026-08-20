@@ -84,6 +84,9 @@
                             </span>
                             {{ isLulus ? 'Lulus' : 'Tidak Lulus' }}
                         </span>
+                        <p v-if="nilaiData?.nilai_minimal_kelulusan != null" class="text-xs text-slate-400 mt-3">
+                            Nilai minimal kelulusan: {{ nilaiData.nilai_minimal_kelulusan }}
+                        </p>
                     </div>
                 </template>
 
