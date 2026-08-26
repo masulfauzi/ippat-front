@@ -1,6 +1,16 @@
 import api from './api'
 
 export const nilaiService = {
+  getNilaiList: async (page = 1, pageSize = 10) => {
+    try {
+      const params = { page, page_size: pageSize }
+      const response = await api.get('/nilai', { params })
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
+
   mulaiUjian: async (idJadwal) => {
     try {
       const response = await api.post(`/nilai/mulai-ujian/${idJadwal}`)

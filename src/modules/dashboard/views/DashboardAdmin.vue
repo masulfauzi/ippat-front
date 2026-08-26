@@ -30,10 +30,6 @@
                         <span class="material-symbols-outlined text-primary-container mb-4 text-3xl">database</span>
                         <h3 class="text-label-sm text-slate-500 mb-1">Total Questions</h3>
                         <p class="text-h3 font-h3 text-slate-800">{{ adminStore.stats.totalQuestions }}</p>
-                        <div class="mt-2 flex items-center gap-1 text-[10px] text-secondary font-bold">
-                            <span class="material-symbols-outlined text-xs">trending_up</span>
-                            <span>{{ adminStore.trends.questionsTrend }}</span>
-                        </div>
                     </div>
 
                     <!-- Active Exams Card -->
@@ -42,10 +38,6 @@
                         <span class="material-symbols-outlined text-on-secondary-container mb-4 text-3xl">play_circle</span>
                         <h3 class="text-label-sm text-slate-500 mb-1">Active Exams</h3>
                         <p class="text-h3 font-h3 text-slate-800">{{ adminStore.stats.activeExams }}</p>
-                        <div class="mt-2 flex items-center gap-1 text-[10px] text-secondary font-bold">
-                            <span class="material-symbols-outlined text-xs">timer</span>
-                            <span>{{ adminStore.trends.examsTrend }}</span>
-                        </div>
                     </div>
 
                     <!-- Total Students Card -->
@@ -54,10 +46,6 @@
                         <span class="material-symbols-outlined text-primary-container mb-4 text-3xl">group</span>
                         <h3 class="text-label-sm text-slate-500 mb-1">Total Students</h3>
                         <p class="text-h3 font-h3 text-slate-800">{{ adminStore.stats.totalStudents }}</p>
-                        <div class="mt-2 flex items-center gap-1 text-[10px] text-slate-400 font-bold">
-                            <span class="material-symbols-outlined text-xs">check_circle</span>
-                            <span>{{ adminStore.trends.studentsTrend }}</span>
-                        </div>
                     </div>
 
                     <!-- Average Grade Card -->
@@ -66,10 +54,6 @@
                         <span class="material-symbols-outlined text-on-secondary-container mb-4 text-3xl">grade</span>
                         <h3 class="text-label-sm text-slate-500 mb-1">Average Grade</h3>
                         <p class="text-h3 font-h3 text-slate-800">{{ adminStore.stats.averageGrade }}</p>
-                        <div class="mt-2 flex items-center gap-1 text-[10px] text-secondary font-bold">
-                            <span class="material-symbols-outlined text-xs">trending_up</span>
-                            <span>{{ adminStore.trends.gradeTrend }}</span>
-                        </div>
                     </div>
                 </section>
 
@@ -80,12 +64,14 @@
                             <h2 class="text-h3 font-h3 text-slate-800">Recent Exam Submissions</h2>
                             <p class="text-sm text-slate-500">Real-time update of student activity</p>
                         </div>
-                        <button class="text-sm font-semibold text-primary-container hover:underline">View All</button>
+                        <button
+                            @click="router.push({ name: 'nilai.list' })"
+                            class="text-sm font-semibold text-primary-container hover:underline">View All</button>
                     </div>
 
                     <!-- Table -->
                     <div class="overflow-hidden">
-                        <table class="w-full text-left">
+                        <table v-if="adminStore.recentSubmissions.length" class="w-full text-left">
                             <thead>
                                 <tr class="border-b border-slate-50">
                                     <th class="pb-4 text-label-sm text-slate-400 uppercase tracking-wider">Student</th>
@@ -109,16 +95,15 @@
                                     <td class="py-4 text-sm text-slate-500">{{ submission.submittedAt }}</td>
                                     <td class="py-4">
                                         <span :class="['px-3 py-1 text-xs font-semibold rounded-full',
-                                            submission.status === 'completed' ? 'bg-green-100 text-green-700' :
-                                            submission.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                                            'bg-red-100 text-red-700'
+                                            submission.status === 'lulus' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                                         ]">
-                                            {{ submission.status }}
+                                            {{ submission.status === 'lulus' ? 'Lulus' : 'Tidak Lulus' }}
                                         </span>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <p v-else class="text-sm text-slate-400 text-center py-6">Belum ada ujian yang diselesaikan.</p>
                     </div>
                 </div>
             </div>
@@ -128,6 +113,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import SideBar from '@/components/SideBar.vue'
 import TopAppBar from '@/components/TopAppBar.vue'
 import { useAdminStore } from '@/stores/admin'
@@ -135,6 +121,7 @@ import { useAuthStore } from '@/stores/auth'
 
 const adminStore = useAdminStore()
 const authStore = useAuthStore()
+const router = useRouter()
 const currentDate = ref('')
 const adminName = ref('')
 
@@ -148,7 +135,7 @@ onMounted(() => {
     currentDate.value = today.toLocaleDateString('id-ID', options)
 
     // Fetch stats
-    adminStore.fetchStats()
-    adminStore.fetchRecentSubmissions()
+    adminStore.fetchStats().catch(() => {})
+    adminStore.fetchRecentSubmissions().catch(() => {})
 })
 </script>

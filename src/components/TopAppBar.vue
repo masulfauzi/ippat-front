@@ -23,8 +23,10 @@
                         <p class="font-label-md text-label-md text-on-surface">{{ userName }}</p>
                         <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">{{ userRole }}</p>
                     </div>
-                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-sky-100 p-0.5">
-                        <img alt="User profile avatar" class="w-full h-full object-cover rounded-full" :src="userAvatar" />
+                    <div class="w-10 h-10 rounded-full border-2 border-sky-100 p-0.5">
+                        <div class="w-full h-full rounded-full bg-sky-100 flex items-center justify-center text-sky-600 font-bold text-xs">
+                            {{ userInitials }}
+                        </div>
                     </div>
                 </button>
 
@@ -81,12 +83,19 @@ const uiStore = useUiStore()
 const router = useRouter()
 const isDropdownOpen = ref(false)
 
-const userAvatar = ref('https://lh3.googleusercontent.com/aida-public/AB6AXuB9U5KURX3eumGQKeub8bUR7L74sraVdj5vIY-omMSvEMaGBJldTzEYfYTvmZppjymd35ebrZbDV3aifEC1b1mYRpgJ2zGe0qL_VWoku_0phkarPtEIQU8GRxUXoipSKtyNOZbHsH-I00WvpZcGt8JMEM1aDNdjpr4l_alp-GAOY3cOwO89_8BRSmRjB5x1XApXCbAqU2m2CVFsxWpsUr7Naw8F9zgR3DS_INZ4Lgmgq3NEfpt_10Qc189HaundOan0GJ7UbJwbkwpM')
-
 const isAdmin = computed(() => authStore.currentUser?.role === 'admin')
 const userName = computed(() => authStore.displayName)
 const userEmail = computed(() => authStore.currentUser?.email || '')
 const userRole = computed(() => isAdmin.value ? 'Administrator' : 'Peserta')
+const userInitials = computed(() => {
+    const name = userName.value?.trim()
+    if (!name || name === 'User') return '?'
+    return name
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase())
+        .join('')
+})
 
 const pageTitle = computed(() => {
     return isAdmin.value ? 'Exam Management' : 'Student Dashboard'
