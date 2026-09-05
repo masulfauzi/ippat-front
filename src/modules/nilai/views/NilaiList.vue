@@ -77,6 +77,7 @@
                   <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Waktu Mulai</th>
                   <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Waktu Selesai</th>
                   <th class="px-6 py-3 text-center text-xs font-semibold text-slate-600 uppercase">Status</th>
+                  <th class="px-6 py-3 text-center text-xs font-semibold text-slate-600 uppercase">Aksi</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-200">
@@ -95,6 +96,16 @@
                       </span>
                       {{ formatStatusKelulusan(nilai.status_kelulusan) }}
                     </span>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <button
+                      @click="openTambahWaktuModal(nilai)"
+                      :disabled="!nilai.wkt_mulai"
+                      :title="!nilai.wkt_mulai ? 'Peserta belum memulai ujian' : 'Tambah waktu pengerjaan'"
+                      class="inline-flex items-center gap-1 px-3 py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-semibold rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                      <span class="material-symbols-outlined text-[15px]">more_time</span>
+                      Tambah Waktu
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -145,6 +156,47 @@
         </div>
       </div>
     </main>
+
+    <!-- Modal Tambah Waktu -->
+    <Teleport to="body">
+      <Transition name="modal-fade">
+        <div
+          v-if="showTambahWaktuModal"
+          class="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+          @click.self="closeTambahWaktuModal">
+          <div class="bg-white rounded-2xl p-8 w-full max-w-[32rem] shadow-2xl">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-h3 text-h3 text-on-surface">Tambah Waktu Ujian</h3>
+              <button
+                @click="closeTambahWaktuModal"
+                :disabled="isSubmittingTambahWaktu"
+                class="p-1 text-slate-400 hover:text-slate-600 disabled:opacity-40">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+
+            <p class="text-base text-slate-600 mb-6">
+              Tambahkan waktu pengerjaan untuk
+              <span class="font-semibold text-slate-900">{{ targetNilai?.nama_peserta }}</span>.
+              Peserta akan otomatis dapat melanjutkan ujian.
+            </p>
+
+            <div class="grid grid-cols-3 gap-4">
+              <button
+                v-for="menit in durasiOptions"
+                :key="menit"
+                @click="handleTambahWaktu(menit)"
+                :disabled="isSubmittingTambahWaktu"
+                class="py-4 px-3 rounded-lg border border-slate-300 text-slate-700 text-base font-semibold whitespace-nowrap hover:bg-sky-50 hover:border-sky-400 hover:text-sky-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                +{{ menit }} menit
+              </button>
+            </div>
+
+            <p v-if="isSubmittingTambahWaktu" class="text-center text-sm text-slate-500 mt-4">Memproses...</p>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -154,6 +206,9 @@ import SideBar from '@/components/SideBar.vue'
 import TopAppBar from '@/components/TopAppBar.vue'
 import { jadwalService } from '@/services/jadwalService'
 import { nilaiService } from '@/services/nilaiService'
+import { useDialog } from '@/composables/useDialog'
+
+const { $alert } = useDialog()
 
 const jadwalList = ref([])
 const selectedJadwalId = ref('')
@@ -165,6 +220,11 @@ const isLoadingJadwal = ref(false)
 const isLoadingNilai = ref(false)
 const isExporting = ref(false)
 const errorMsg = ref('')
+
+const durasiOptions = [5, 10, 15, 20, 25, 30]
+const showTambahWaktuModal = ref(false)
+const targetNilai = ref(null)
+const isSubmittingTambahWaktu = ref(false)
 
 const totalPages = computed(() => Math.ceil(totalNilai.value / pageSize.value))
 
@@ -233,6 +293,52 @@ const handleExport = async () => {
   }
 }
 
+const openTambahWaktuModal = (nilai) => {
+  targetNilai.value = nilai
+  showTambahWaktuModal.value = true
+}
+
+const closeTambahWaktuModal = () => {
+  if (isSubmittingTambahWaktu.value) return
+  showTambahWaktuModal.value = false
+  targetNilai.value = null
+}
+
+const formatDateTimeForApi = (date) => {
+  const pad = (n) => String(n).padStart(2, '0')
+  return (
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +
+    `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+  )
+}
+
+const handleTambahWaktu = async (menit) => {
+  if (!targetNilai.value?.wkt_mulai) return
+  isSubmittingTambahWaktu.value = true
+  try {
+    const wktMulaiBaru = new Date(new Date(targetNilai.value.wkt_mulai).getTime() + menit * 60 * 1000)
+    await nilaiService.selesaiUjian(targetNilai.value.id, {
+      wkt_mulai: formatDateTimeForApi(wktMulaiBaru),
+      wkt_selesai: '',
+    })
+    showTambahWaktuModal.value = false
+    targetNilai.value = null
+    await loadNilai(currentPage.value)
+    await $alert(`Berhasil menambah waktu ${menit} menit dan melanjutkan ujian peserta.`, {
+      title: 'Berhasil',
+      type: 'success',
+    })
+  } catch (err) {
+    await $alert(err.response?.data?.message || 'Gagal menambah waktu ujian', {
+      title: 'Gagal',
+      type: 'error',
+    })
+    console.error('Error menambah waktu ujian:', err)
+  } finally {
+    isSubmittingTambahWaktu.value = false
+  }
+}
+
 const isLulus = (statusKelulusan) => statusKelulusan?.toUpperCase() === 'LULUS'
 
 const formatStatusKelulusan = (statusKelulusan) => {
@@ -253,3 +359,23 @@ const formatDateTime = (dateTime) => {
   })
 }
 </script>
+
+<style scoped>
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.modal-fade-enter-active > div,
+.modal-fade-leave-active > div {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+}
+.modal-fade-enter-from > div,
+.modal-fade-leave-to > div {
+  opacity: 0;
+  transform: scale(0.95) translateY(8px);
+}
+</style>
