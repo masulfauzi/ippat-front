@@ -98,14 +98,24 @@
                     </span>
                   </td>
                   <td class="px-6 py-4 text-center">
-                    <button
-                      @click="openTambahWaktuModal(nilai)"
-                      :disabled="!nilai.wkt_mulai"
-                      :title="!nilai.wkt_mulai ? 'Peserta belum memulai ujian' : 'Tambah waktu pengerjaan'"
-                      class="inline-flex items-center gap-1 px-3 py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-semibold rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
-                      <span class="material-symbols-outlined text-[15px]">more_time</span>
-                      Tambah Waktu
-                    </button>
+                    <div class="flex items-center justify-center gap-2">
+                      <button
+                        @click="openTambahWaktuModal(nilai)"
+                        :disabled="!nilai.wkt_mulai"
+                        :title="!nilai.wkt_mulai ? 'Peserta belum memulai ujian' : 'Tambah waktu pengerjaan'"
+                        class="inline-flex items-center gap-1 px-3 py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-semibold rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                        <span class="material-symbols-outlined text-[15px]">more_time</span>
+                        Tambah Waktu
+                      </button>
+                      <button
+                        @click="handleLihatJawaban(nilai)"
+                        :disabled="!nilai.wkt_mulai"
+                        :title="!nilai.wkt_mulai ? 'Peserta belum memulai ujian' : 'Lihat detail jawaban'"
+                        class="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                        <span class="material-symbols-outlined text-[15px]">visibility</span>
+                        Lihat Jawaban
+                      </button>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -202,12 +212,14 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import SideBar from '@/components/SideBar.vue'
 import TopAppBar from '@/components/TopAppBar.vue'
 import { jadwalService } from '@/services/jadwalService'
 import { nilaiService } from '@/services/nilaiService'
 import { useDialog } from '@/composables/useDialog'
 
+const router = useRouter()
 const { $alert } = useDialog()
 
 const jadwalList = ref([])
@@ -291,6 +303,10 @@ const handleExport = async () => {
   } finally {
     isExporting.value = false
   }
+}
+
+const handleLihatJawaban = (nilai) => {
+  router.push({ name: 'nilai.jawabanDetail', params: { id: nilai.id } })
 }
 
 const openTambahWaktuModal = (nilai) => {
