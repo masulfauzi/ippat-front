@@ -16,14 +16,11 @@
         ]">
         <!-- Logo Section -->
         <div class="mb-8 px-4 flex items-center gap-3">
-            <div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-white"
-                    style="font-variation-settings: 'FILL' 1;">school</span>
-            </div>
+            <img src="/pngegg.png" alt="UKEN Ikatan Notaris Indonesia" class="w-10 h-10 object-contain flex-shrink-0" />
             <div>
-                <h2 class="text-lg font-black text-sky-600 leading-none">CBT Online</h2>
+                <h2 class="text-lg font-black text-sky-600 leading-none">UKEN</h2>
                 <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
-                    {{ isAdmin ? 'Management Portal' : 'Student Portal' }}</p>
+                    Ikatan Notaris Indonesia</p>
             </div>
         </div>
 
