@@ -68,4 +68,15 @@ export const nilaiService = {
       throw error
     }
   },
+
+  analisisJawaban: async (idJadwal) => {
+    try {
+      const response = await api.get(`/nilai/analisis-jawaban/${idJadwal}`, {
+        responseType: 'blob',
+      })
+      return response
+    } catch (error) {
+      throw error
+    }
+  },
 }

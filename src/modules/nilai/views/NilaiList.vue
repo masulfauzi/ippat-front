@@ -59,6 +59,14 @@
               <span class="material-symbols-outlined">download</span>
               {{ isExporting ? 'Mengunduh...' : 'Export Nilai' }}
             </button>
+            <button
+              v-if="nilaiList.length > 0"
+              @click="handleDownloadAnalisis"
+              :disabled="isDownloadingAnalisis"
+              class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+              <span class="material-symbols-outlined">analytics</span>
+              {{ isDownloadingAnalisis ? 'Mengunduh...' : 'Download Analisis Jawaban' }}
+            </button>
           </div>
 
           <!-- Table Section -->
@@ -231,6 +239,7 @@ const pageSize = ref(10)
 const isLoadingJadwal = ref(false)
 const isLoadingNilai = ref(false)
 const isExporting = ref(false)
+const isDownloadingAnalisis = ref(false)
 const errorMsg = ref('')
 
 const durasiOptions = [5, 10, 15, 20, 25, 30]
@@ -302,6 +311,44 @@ const handleExport = async () => {
     console.error('Error exporting nilai:', err)
   } finally {
     isExporting.value = false
+  }
+}
+
+const extractBlobErrorMessage = async (err) => {
+  const data = err.response?.data
+  if (data instanceof Blob && data.type.includes('json')) {
+    try {
+      const json = JSON.parse(await data.text())
+      return json.message
+    } catch {
+      return null
+    }
+  }
+  return err.response?.data?.message
+}
+
+const handleDownloadAnalisis = async () => {
+  if (!selectedJadwalId.value) return
+  isDownloadingAnalisis.value = true
+  errorMsg.value = ''
+  try {
+    const response = await nilaiService.analisisJawaban(selectedJadwalId.value)
+    const blob = new Blob([response.data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    })
+    const url = URL.createObjectURL(blob)
+    const filename =
+      response.headers['content-disposition']?.match(/filename="(.+)"/)?.[1] || 'analisis_jawaban.xlsx'
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    a.click()
+    URL.revokeObjectURL(url)
+  } catch (err) {
+    errorMsg.value = (await extractBlobErrorMessage(err)) || 'Gagal mengunduh analisis jawaban'
+    console.error('Error downloading analisis jawaban:', err)
+  } finally {
+    isDownloadingAnalisis.value = false
   }
 }
 
