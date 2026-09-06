@@ -73,6 +73,14 @@
             </button>
           </div>
 
+          <a
+            href="/templates/template_import_soal.xlsx"
+            download
+            class="inline-flex items-center gap-2 text-sky-600 hover:text-sky-700 text-sm font-semibold mt-3">
+            <span class="material-symbols-outlined text-[18px]">download</span>
+            Unduh Template Import Soal
+          </a>
+
           <!-- Hidden File Input -->
           <input
             ref="fileInput"
