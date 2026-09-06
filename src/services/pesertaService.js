@@ -56,4 +56,18 @@ export const pesertaService = {
       throw error
     }
   },
+
+  importPesertaFromExcel: async (idKelas, file) => {
+    try {
+      const formData = new FormData()
+      formData.append('id_kelas', idKelas)
+      formData.append('file', file)
+      const response = await api.post('/peserta/import', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
 }
