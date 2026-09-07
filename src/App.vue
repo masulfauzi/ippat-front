@@ -4,8 +4,9 @@
     <header v-if="!isDashboardPage"
       class="bg-white/80 backdrop-blur-md border-b border-slate-200 shadow-sm fixed top-0 w-full z-50 font-['Plus_Jakarta_Sans'] antialiased">
       <div class="flex justify-between items-center px-6 h-16 w-full max-w-7xl mx-auto">
-        <div class="text-xl font-extrabold tracking-tight text-primary">
-          SkyView Admin
+        <div class="flex items-center gap-2 text-xl font-extrabold tracking-tight text-primary">
+          <img src="/pngegg.png" alt="UKEN Ikatan Notaris Indonesia" class="w-8 h-8 object-contain" />
+          UKEN
         </div>
         <div class="flex items-center space-gap-4">
           <button
