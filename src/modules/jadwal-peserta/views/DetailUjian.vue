@@ -43,7 +43,7 @@
                     <section class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
                         <div>
                             <div class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold uppercase tracking-wider mb-3">
-                                {{ jadwal?.tingkat ? 'Tingkat ' + jadwal.tingkat : 'Ujian' }}
+                                Ujian
                             </div>
                             <p class="text-slate-400 text-sm mb-1 font-body-md">{{ detail?.nama_ujian || '-' }}</p>
                             <h1 class="font-h1 text-h1 text-on-surface leading-tight">{{ detail?.nama_bank_soal || '-' }}</h1>

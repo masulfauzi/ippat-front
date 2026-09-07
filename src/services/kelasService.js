@@ -5,7 +5,6 @@ export const kelasService = {
     try {
       const params = { page, page_size: pageSize }
       if (filters.id_jurusan) params.id_jurusan = filters.id_jurusan
-      if (filters.tingkat) params.tingkat = filters.tingkat
       const response = await api.get('/kelas', { params })
       return response.data
     } catch (error) {

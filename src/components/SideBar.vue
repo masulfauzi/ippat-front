@@ -83,7 +83,7 @@
                     : 'text-slate-600 hover:bg-slate-50 transition-all'
             ]">
                 <span class="material-symbols-outlined">apartment</span>
-                <span class="font-label-md text-label-md">Jurusan</span>
+                <span class="font-label-md text-label-md">Wilayah</span>
             </router-link>
             <router-link to="/admin/kelas" @click="uiStore.closeSidebar()" :class="[
                 'flex items-center gap-3 rounded-lg px-4 py-3 font-semibold hover:translate-x-1 duration-200',

@@ -96,32 +96,13 @@
           <p v-if="errors.durasi" class="text-red-600 text-sm mt-1">{{ errors.durasi }}</p>
         </div>
 
-        <!-- Angkatan Field -->
-        <div>
-          <label class="block text-sm font-semibold text-slate-900 mb-2">
-            Angkatan <span class="text-red-600">*</span>
-          </label>
-          <select
-            v-model="formData.angkatan"
-            @change="handleAngkatanChange"
-            @blur="validateAngkatan"
-            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-            :class="{ 'border-red-500 focus:ring-red-500': errors.angkatan }">
-            <option value="" disabled>Pilih Angkatan...</option>
-            <option value="X">X</option>
-            <option value="XI">XI</option>
-            <option value="XII">XII</option>
-          </select>
-          <p v-if="errors.angkatan" class="text-red-600 text-sm mt-1">{{ errors.angkatan }}</p>
-        </div>
-
         <!-- Jurusan Field (Multiple) -->
         <div>
           <label class="block text-sm font-semibold text-slate-900 mb-2">
-            Jurusan <span class="text-red-600">*</span> <span class="text-slate-500 text-sm font-normal">(Pilih satu atau lebih)</span>
+            Wilayah <span class="text-red-600">*</span> <span class="text-slate-500 text-sm font-normal">(Pilih satu atau lebih)</span>
           </label>
           <div v-if="jurusanOptions.length === 0" class="text-slate-600 text-sm py-4">
-            Memuat data jurusan...
+            Memuat data wilayah...
           </div>
           <div v-else class="space-y-2 border border-slate-300 rounded-lg p-4"
             :class="{ 'border-red-500': errors.id_jurusan }">
@@ -248,7 +229,6 @@ const formData = reactive({
   wkt_mulai: '',
   wkt_selesai: '',
   durasi: '',
-  angkatan: '',
   id_jurusan: [],
   selectedKelasIds: [],
   acak_soal: false,
@@ -261,7 +241,6 @@ const errors = reactive({
   wkt_mulai: '',
   wkt_selesai: '',
   durasi: '',
-  angkatan: '',
   id_jurusan: '',
   selectedKelasIds: '',
 })
@@ -322,17 +301,8 @@ const validateDurasi = () => {
   }
 }
 
-const validateAngkatan = () => {
-  errors.angkatan = formData.angkatan ? '' : 'Angkatan wajib dipilih'
-}
-
 const validateJurusan = () => {
-  errors.id_jurusan = formData.id_jurusan.length > 0 ? '' : 'Jurusan wajib dipilih'
-}
-
-const handleAngkatanChange = async () => {
-  formData.selectedKelasIds = []
-  await loadKelas()
+  errors.id_jurusan = formData.id_jurusan.length > 0 ? '' : 'Wilayah wajib dipilih'
 }
 
 const handleJurusanChange = async () => {
@@ -341,14 +311,13 @@ const handleJurusanChange = async () => {
 }
 
 const loadKelas = async () => {
-  if (formData.angkatan && formData.id_jurusan.length > 0) {
+  if (formData.id_jurusan.length > 0) {
     try {
       // Load kelas untuk semua jurusan yang dipilih
       const allKelas = new Map()
 
       for (const jurusanId of formData.id_jurusan) {
         const response = await kelasStore.fetchKelasList(1, 100, {
-          tingkat: formData.angkatan,
           id_jurusan: jurusanId,
         })
 
@@ -378,7 +347,6 @@ const validateForm = () => {
   errors.wkt_mulai = ''
   errors.wkt_selesai = ''
   errors.durasi = ''
-  errors.angkatan = ''
   errors.id_jurusan = ''
   errors.selectedKelasIds = ''
 
@@ -408,12 +376,8 @@ const validateForm = () => {
     errors.durasi = 'Durasi harus lebih dari 0 menit'
     isValid = false
   }
-  if (!formData.angkatan) {
-    errors.angkatan = 'Angkatan wajib dipilih'
-    isValid = false
-  }
   if (formData.id_jurusan.length === 0) {
-    errors.id_jurusan = 'Jurusan wajib dipilih'
+    errors.id_jurusan = 'Wilayah wajib dipilih'
     isValid = false
   }
   if (formData.selectedKelasIds.length === 0) {
@@ -439,7 +403,6 @@ const handleSubmit = async () => {
       wkt_mulai: formatDatetime(formData.wkt_mulai),
       wkt_selesai: formatDatetime(formData.wkt_selesai),
       durasi: formData.durasi,
-      tingkat: formData.angkatan,
       id_kelas: formData.selectedKelasIds,
       acak_soal: formData.acak_soal ? 1 : 0,
       acak_opsi: formData.acak_opsi ? 1 : 0,

@@ -28,7 +28,7 @@
         </div>
 
         <div v-else-if="jadwalData" class="space-y-6">
-          <!-- Bank Soal & Angkatan -->
+          <!-- Bank Soal -->
           <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
             <h2 class="text-lg font-semibold text-slate-900 mb-4">Informasi Umum</h2>
             <div class="space-y-4">
@@ -36,15 +36,9 @@
                 <p class="text-sm font-medium text-slate-600">Nama Ujian</p>
                 <p class="text-lg text-slate-900 font-semibold mt-1">{{ jadwalData.nama_ujian }}</p>
               </div>
-              <div class="grid grid-cols-2 gap-6">
-                <div>
-                  <p class="text-sm font-medium text-slate-600">Bank Soal</p>
-                  <p class="text-lg text-slate-900 font-semibold mt-1">{{ jadwalData.nama_bank_soal }}</p>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-slate-600">Angkatan</p>
-                  <p class="text-lg text-slate-900 font-semibold mt-1">{{ jadwalData.tingkat }}</p>
-                </div>
+              <div>
+                <p class="text-sm font-medium text-slate-600">Bank Soal</p>
+                <p class="text-lg text-slate-900 font-semibold mt-1">{{ jadwalData.nama_bank_soal }}</p>
               </div>
             </div>
           </div>
@@ -119,7 +113,7 @@
 
           <!-- Jurusan -->
           <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
-            <h2 class="text-lg font-semibold text-slate-900 mb-4">Jurusan</h2>
+            <h2 class="text-lg font-semibold text-slate-900 mb-4">Wilayah</h2>
             <div class="space-y-2">
               <div v-for="jurusan in jadwalData.id_jurusan" :key="jurusan.id" class="flex items-center gap-2 text-slate-900">
                 <span class="material-symbols-outlined text-sky-600">check_circle</span>

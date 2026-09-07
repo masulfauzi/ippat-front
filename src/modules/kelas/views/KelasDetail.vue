@@ -44,12 +44,8 @@
           <h3 class="text-sm font-semibold text-slate-600 uppercase mb-4">Informasi Kelas</h3>
           <div class="space-y-3">
             <div>
-              <p class="text-xs text-slate-500 uppercase">Jurusan</p>
+              <p class="text-xs text-slate-500 uppercase">Wilayah</p>
               <p class="text-slate-900 font-medium">{{ selectedKelas.nama_jurusan }}</p>
-            </div>
-            <div>
-              <p class="text-xs text-slate-500 uppercase">Tingkat</p>
-              <p class="text-slate-900 font-medium">{{ selectedKelas.tingkat }}</p>
             </div>
           </div>
         </div>

@@ -11,8 +11,8 @@
       <div class="pt-24 pb-12 px-4 lg:px-8 max-w-2xl mx-auto">
       <!-- Page Title -->
       <div class="mb-8">
-        <h1 class="text-3xl font-bold text-slate-900">Buat Jurusan Baru</h1>
-        <p class="text-slate-500 mt-1">Tambahkan jurusan baru ke sistem</p>
+        <h1 class="text-3xl font-bold text-slate-900">Buat Wilayah Baru</h1>
+        <p class="text-slate-500 mt-1">Tambahkan wilayah baru ke sistem</p>
       </div>
 
       <!-- Error Message -->
@@ -24,7 +24,7 @@
       <div v-if="isSubmitting" class="flex justify-center items-center py-12">
         <div class="text-center">
           <div class="inline-block w-10 h-10 border-4 border-sky-200 border-t-sky-600 rounded-full animate-spin"></div>
-          <p class="mt-3 text-slate-600">Membuat jurusan...</p>
+          <p class="mt-3 text-slate-600">Membuat wilayah...</p>
         </div>
       </div>
 
@@ -33,13 +33,13 @@
         <!-- Nama Jurusan Field -->
         <div>
           <label class="block text-sm font-semibold text-slate-900 mb-2">
-            Nama Jurusan <span class="text-red-600">*</span>
+            Nama Wilayah <span class="text-red-600">*</span>
           </label>
           <input
             v-model="formData.nama_jurusan"
             @blur="validateNamaJurusan"
             type="text"
-            placeholder="Contoh: Teknik Komputer dan Jaringan"
+            placeholder="Contoh: Jakarta Selatan"
             maxlength="255"
             class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
             :class="{ 'border-red-500 focus:ring-red-500': errors.nama_jurusan }">
@@ -54,7 +54,7 @@
             class="flex-1 bg-sky-600 hover:bg-sky-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
             :disabled="isSubmitting">
             <span class="material-symbols-outlined">check</span>
-            Simpan Jurusan
+            Simpan Wilayah
           </button>
           <button
             type="button"
@@ -92,9 +92,9 @@ const errors = reactive({
 const validateNamaJurusan = () => {
   errors.nama_jurusan = ''
   if (!formData.nama_jurusan || formData.nama_jurusan.trim().length === 0) {
-    errors.nama_jurusan = 'Nama jurusan wajib diisi'
+    errors.nama_jurusan = 'Nama wilayah wajib diisi'
   } else if (formData.nama_jurusan.length > 255) {
-    errors.nama_jurusan = 'Nama jurusan maksimal 255 karakter'
+    errors.nama_jurusan = 'Nama wilayah maksimal 255 karakter'
   }
 }
 
@@ -119,7 +119,7 @@ const handleSubmit = async () => {
 
     router.push({ name: 'jurusan.list' })
   } catch (err) {
-    error.value = jurusanStore.error || 'Gagal membuat jurusan'
+    error.value = jurusanStore.error || 'Gagal membuat wilayah'
     isSubmitting.value = false
   }
 }

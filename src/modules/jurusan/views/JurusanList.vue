@@ -12,14 +12,14 @@
       <!-- Page Title & Create Button -->
       <div class="flex items-center justify-between mb-8">
         <div>
-          <h1 class="text-3xl font-bold text-slate-900">Manajemen Jurusan</h1>
-          <p class="text-slate-500 mt-1">Kelola semua jurusan dalam sistem</p>
+          <h1 class="text-3xl font-bold text-slate-900">Manajemen Wilayah</h1>
+          <p class="text-slate-500 mt-1">Kelola semua wilayah dalam sistem</p>
         </div>
         <button
           @click="handleCreate"
           class="flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
           <span class="material-symbols-outlined">add</span>
-          Buat Jurusan Baru
+          Buat Wilayah Baru
         </button>
       </div>
 
@@ -37,7 +37,7 @@
       <div v-if="isLoading" class="flex justify-center items-center py-12">
         <div class="text-center">
           <div class="inline-block w-10 h-10 border-4 border-sky-200 border-t-sky-600 rounded-full animate-spin"></div>
-          <p class="mt-3 text-slate-600">Memuat data jurusan...</p>
+          <p class="mt-3 text-slate-600">Memuat data wilayah...</p>
         </div>
       </div>
 
@@ -45,11 +45,11 @@
       <div v-else class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
         <div v-if="!isLoading && jurusans.length === 0" class="text-center py-12">
           <span class="material-symbols-outlined text-6xl text-slate-300">inbox</span>
-          <p class="text-slate-600 mt-4">Belum ada jurusan yang dibuat</p>
+          <p class="text-slate-600 mt-4">Belum ada wilayah yang dibuat</p>
           <button
             @click="handleCreate"
             class="mt-4 text-sky-600 hover:text-sky-700 font-semibold">
-            Buat jurusan pertama Anda
+            Buat wilayah pertama Anda
           </button>
         </div>
 
@@ -57,7 +57,7 @@
           <thead class="bg-slate-50 border-b border-slate-200">
             <tr>
               <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">No.</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Nama Jurusan</th>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Nama Wilayah</th>
               <th class="px-6 py-3 text-center text-xs font-semibold text-slate-600 uppercase">Aksi</th>
             </tr>
           </thead>
@@ -98,7 +98,7 @@
       <div v-if="!isLoading && jurusans.length > 0" class="flex items-center justify-between mt-6">
         <p class="text-slate-600">
           Menampilkan {{ (currentPage - 1) * pageSize + 1 }} hingga
-          {{ Math.min(currentPage * pageSize, totalJurusans) }} dari {{ totalJurusans }} jurusan
+          {{ Math.min(currentPage * pageSize, totalJurusans) }} dari {{ totalJurusans }} wilayah
         </p>
         <div class="flex gap-2">
           <button
@@ -184,7 +184,7 @@ const handleEdit = (id) => {
 }
 
 const handleDelete = async (id) => {
-  if (await $confirm('Yakin ingin menghapus jurusan ini?', { title: 'Konfirmasi Hapus' })) {
+  if (await $confirm('Yakin ingin menghapus wilayah ini?', { title: 'Konfirmasi Hapus' })) {
     try {
       await jurusanStore.deleteJurusan(id)
       await jurusanStore.fetchJurusanList(currentPage.value)

@@ -35,13 +35,13 @@
         <!-- Jurusan Field -->
         <div>
           <label class="block text-sm font-semibold text-slate-900 mb-2">
-            Jurusan <span class="text-red-600">*</span>
+            Wilayah <span class="text-red-600">*</span>
           </label>
           <SearchableSelect
             v-model="formData.id_jurusan"
             :options="jurusanOptions"
             :hasError="!!errors.id_jurusan"
-            placeholder="Pilih Jurusan..." />
+            placeholder="Pilih Wilayah..." />
           <p v-if="errors.id_jurusan" class="text-red-600 text-sm mt-1">{{ errors.id_jurusan }}</p>
         </div>
 
@@ -60,24 +60,6 @@
             :class="{ 'border-red-500 focus:ring-red-500': errors.nama_kelas }">
           <p v-if="errors.nama_kelas" class="text-red-600 text-sm mt-1">{{ errors.nama_kelas }}</p>
           <p class="text-slate-500 text-sm mt-1">{{ formData.nama_kelas.length }} / 255 karakter</p>
-        </div>
-
-        <!-- Tingkat Field -->
-        <div>
-          <label class="block text-sm font-semibold text-slate-900 mb-2">
-            Tingkat <span class="text-red-600">*</span>
-          </label>
-          <select
-            v-model="formData.tingkat"
-            @blur="validateTingkat"
-            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-            :class="{ 'border-red-500 focus:ring-red-500': errors.tingkat }">
-            <option value="" disabled>Pilih Tingkat...</option>
-            <option value="X">X (Kelas 10)</option>
-            <option value="XI">XI (Kelas 11)</option>
-            <option value="XII">XII (Kelas 12)</option>
-          </select>
-          <p v-if="errors.tingkat" class="text-red-600 text-sm mt-1">{{ errors.tingkat }}</p>
         </div>
 
         <!-- Action Buttons -->
@@ -123,13 +105,11 @@ const error = ref(null)
 const formData = reactive({
   id_jurusan: '',
   nama_kelas: '',
-  tingkat: '',
 })
 
 const errors = reactive({
   id_jurusan: '',
   nama_kelas: '',
-  tingkat: '',
 })
 
 const selectedKelas = computed(() => kelasStore.selectedKelas)
@@ -143,7 +123,6 @@ onMounted(async () => {
     if (kelas) {
       formData.id_jurusan = kelas.id_jurusan
       formData.nama_kelas = kelas.nama_kelas
-      formData.tingkat = kelas.tingkat
     }
   } catch (err) {
     error.value = 'Kelas tidak ditemukan'
@@ -157,7 +136,7 @@ const jurusanOptions = computed(() =>
 )
 
 const validateIdJurusan = () => {
-  errors.id_jurusan = formData.id_jurusan ? '' : 'Jurusan wajib dipilih'
+  errors.id_jurusan = formData.id_jurusan ? '' : 'Wilayah wajib dipilih'
 }
 
 const validateNamaKelas = () => {
@@ -169,15 +148,10 @@ const validateNamaKelas = () => {
   }
 }
 
-const validateTingkat = () => {
-  errors.tingkat = formData.tingkat ? '' : 'Tingkat wajib dipilih'
-}
-
 const validateForm = () => {
   validateIdJurusan()
   validateNamaKelas()
-  validateTingkat()
-  return !errors.id_jurusan && !errors.nama_kelas && !errors.tingkat
+  return !errors.id_jurusan && !errors.nama_kelas
 }
 
 const handleSubmit = async () => {
@@ -193,7 +167,6 @@ const handleSubmit = async () => {
     await kelasStore.updateKelas(kelasId, {
       id_jurusan: formData.id_jurusan,
       nama_kelas: formData.nama_kelas.trim(),
-      tingkat: formData.tingkat,
     })
 
     router.push({ name: 'kelas.list' })

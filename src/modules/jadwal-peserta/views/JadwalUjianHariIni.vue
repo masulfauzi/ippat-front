@@ -73,9 +73,6 @@
                                         }">
                                         {{ getStatusLabel(item) }}
                                     </span>
-                                    <span class="px-2 py-1 bg-sky-50 text-sky-600 text-[10px] font-bold rounded uppercase tracking-wider">
-                                        Tingkat {{ item.tingkat }}
-                                    </span>
                                     <span class="text-slate-400 text-[12px] font-medium">{{ item.nama_bank_soal }}</span>
                                 </div>
                                 <h3 class="font-h3 text-h3 text-slate-800">{{ item.nama_ujian }}</h3>

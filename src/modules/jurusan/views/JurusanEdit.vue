@@ -12,9 +12,9 @@
       <!-- Page Title -->
       <div class="mb-8">
         <h1 class="text-3xl font-bold text-slate-900">
-          Edit Jurusan <span v-if="!isLoadingDetail" class="text-sky-600">{{ selectedJurusan?.nama_jurusan }}</span>
+          Edit Wilayah <span v-if="!isLoadingDetail" class="text-sky-600">{{ selectedJurusan?.nama_jurusan }}</span>
         </h1>
-        <p class="text-slate-500 mt-1">Perbarui informasi jurusan</p>
+        <p class="text-slate-500 mt-1">Perbarui informasi wilayah</p>
       </div>
 
       <!-- Error Message -->
@@ -26,7 +26,7 @@
       <div v-if="isLoadingDetail" class="flex justify-center items-center py-12">
         <div class="text-center">
           <div class="inline-block w-10 h-10 border-4 border-sky-200 border-t-sky-600 rounded-full animate-spin"></div>
-          <p class="mt-3 text-slate-600">Memuat data jurusan...</p>
+          <p class="mt-3 text-slate-600">Memuat data wilayah...</p>
         </div>
       </div>
 
@@ -35,13 +35,13 @@
         <!-- Nama Jurusan Field -->
         <div>
           <label class="block text-sm font-semibold text-slate-900 mb-2">
-            Nama Jurusan <span class="text-red-600">*</span>
+            Nama Wilayah <span class="text-red-600">*</span>
           </label>
           <input
             v-model="formData.nama_jurusan"
             @blur="validateNamaJurusan"
             type="text"
-            placeholder="Contoh: Teknik Komputer dan Jaringan"
+            placeholder="Contoh: Jakarta Selatan"
             maxlength="255"
             class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
             :class="{ 'border-red-500 focus:ring-red-500': errors.nama_jurusan }">
@@ -105,7 +105,7 @@ onMounted(async () => {
       formData.nama_jurusan = jurusan.nama_jurusan
     }
   } catch (err) {
-    error.value = 'Jurusan tidak ditemukan'
+    error.value = 'Wilayah tidak ditemukan'
   } finally {
     isLoadingDetail.value = false
   }
@@ -114,9 +114,9 @@ onMounted(async () => {
 const validateNamaJurusan = () => {
   errors.nama_jurusan = ''
   if (!formData.nama_jurusan || formData.nama_jurusan.trim().length === 0) {
-    errors.nama_jurusan = 'Nama jurusan wajib diisi'
+    errors.nama_jurusan = 'Nama wilayah wajib diisi'
   } else if (formData.nama_jurusan.length > 255) {
-    errors.nama_jurusan = 'Nama jurusan maksimal 255 karakter'
+    errors.nama_jurusan = 'Nama wilayah maksimal 255 karakter'
   }
 }
 
@@ -141,7 +141,7 @@ const handleSubmit = async () => {
 
     router.push({ name: 'jurusan.list' })
   } catch (err) {
-    error.value = jurusanStore.error || 'Gagal mengupdate jurusan'
+    error.value = jurusanStore.error || 'Gagal mengupdate wilayah'
     isSubmitting.value = false
   }
 }

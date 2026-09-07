@@ -33,22 +33,6 @@
         {{ success }}
       </div>
 
-      <!-- Filter Section -->
-      <div v-if="!isLoading" class="mb-6">
-        <div class="flex items-center gap-4">
-          <select
-            v-model="filterTingkat"
-            @change="handleFilter"
-            class="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500">
-            <option value="">Semua Tingkat</option>
-            <option value="X">X</option>
-            <option value="XI">XI</option>
-            <option value="XII">XII</option>
-          </select>
-          <span class="text-slate-500 text-sm">Pilih tingkat untuk memfilter data</span>
-        </div>
-      </div>
-
       <!-- Loading State -->
       <div v-if="isLoading" class="flex justify-center items-center py-12">
         <div class="text-center">
@@ -74,8 +58,7 @@
             <tr>
               <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">No.</th>
               <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Nama Kelas</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Jurusan</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Tingkat</th>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Wilayah</th>
               <th class="px-6 py-3 text-center text-xs font-semibold text-slate-600 uppercase">Aksi</th>
             </tr>
           </thead>
@@ -86,7 +69,6 @@
               </td>
               <td class="px-6 py-4 text-slate-900 font-medium">{{ kelas.nama_kelas }}</td>
               <td class="px-6 py-4 text-slate-900">{{ kelas.nama_jurusan }}</td>
-              <td class="px-6 py-4 text-slate-900">{{ kelas.tingkat }}</td>
               <td class="px-6 py-4 text-center">
                 <div class="flex items-center justify-center gap-2">
                   <button
@@ -166,7 +148,6 @@ const kelasStore = useKelasStore()
 const router = useRouter()
 const { $confirm } = useDialog()
 const currentPage = ref(1)
-const filterTingkat = ref('')
 
 onMounted(async () => {
   await kelasStore.fetchKelasList(1)
@@ -208,7 +189,7 @@ const handleDelete = async (id) => {
   if (await $confirm('Yakin ingin menghapus kelas ini?', { title: 'Konfirmasi Hapus' })) {
     try {
       await kelasStore.deleteKelas(id)
-      await kelasStore.fetchKelasList(currentPage.value, pageSize.value, { tingkat: filterTingkat.value })
+      await kelasStore.fetchKelasList(currentPage.value, pageSize.value)
     } catch (err) {
       console.error('Error deleting kelas:', err)
     }
@@ -218,12 +199,7 @@ const handleDelete = async (id) => {
 const handlePageChange = async (page) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page
-    await kelasStore.fetchKelasList(page, pageSize.value, { tingkat: filterTingkat.value })
+    await kelasStore.fetchKelasList(page, pageSize.value)
   }
-}
-
-const handleFilter = async () => {
-  currentPage.value = 1
-  await kelasStore.fetchKelasList(1, pageSize.value, { tingkat: filterTingkat.value })
 }
 </script>
