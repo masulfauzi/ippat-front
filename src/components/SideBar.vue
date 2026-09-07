@@ -65,7 +65,7 @@
                     : 'text-slate-600 hover:bg-slate-50 transition-all'
             ]">
                 <span class="material-symbols-outlined">subject</span>
-                <span class="font-label-md text-label-md">Mapel</span>
+                <span class="font-label-md text-label-md">Jenis Ujian</span>
             </router-link>
             <router-link to="/admin/kategori-soal" @click="uiStore.closeSidebar()" :class="[
                 'flex items-center gap-3 rounded-lg px-4 py-3 font-semibold hover:translate-x-1 duration-200',

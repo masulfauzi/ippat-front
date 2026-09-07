@@ -15,7 +15,7 @@
           <span v-if="!isLoading">{{ selectedMapel?.nama_mapel }}</span>
           <span v-else>Memuat detail...</span>
         </h1>
-        <p class="text-slate-500 mt-1">Informasi detail mata pelajaran</p>
+        <p class="text-slate-500 mt-1">Informasi detail mata ujian</p>
       </div>
 
       <!-- Error Message -->
@@ -27,7 +27,7 @@
       <div v-if="isLoading" class="flex justify-center items-center py-12">
         <div class="text-center">
           <div class="inline-block w-10 h-10 border-4 border-sky-200 border-t-sky-600 rounded-full animate-spin"></div>
-          <p class="mt-3 text-slate-600">Memuat detail mapel...</p>
+          <p class="mt-3 text-slate-600">Memuat detail mata ujian...</p>
         </div>
       </div>
 
@@ -37,13 +37,13 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Nama Mapel Card -->
           <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
-            <h3 class="text-sm font-semibold text-slate-600 uppercase mb-2">Nama Mapel</h3>
+            <h3 class="text-sm font-semibold text-slate-600 uppercase mb-2">Nama Mata Ujian</h3>
             <p class="text-2xl font-bold text-slate-900">{{ selectedMapel.nama_mapel }}</p>
           </div>
 
           <!-- Kode Mapel Card -->
           <div class="bg-white rounded-lg shadow border border-slate-200 p-6">
-            <h3 class="text-sm font-semibold text-slate-600 uppercase mb-2">Kode Mapel</h3>
+            <h3 class="text-sm font-semibold text-slate-600 uppercase mb-2">Kode Mata Ujian</h3>
             <p class="text-2xl font-bold text-sky-600">{{ selectedMapel.kode_mapel }}</p>
           </div>
         </div>
@@ -78,13 +78,13 @@
             @click="handleEdit"
             class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2">
             <span class="material-symbols-outlined">edit</span>
-            Edit Mapel
+            Edit Mata Ujian
           </button>
           <button
             @click="handleDelete"
             class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2">
             <span class="material-symbols-outlined">delete</span>
-            Hapus Mapel
+            Hapus Mata Ujian
           </button>
           <button
             @click="handleBack"
@@ -97,7 +97,7 @@
       <!-- Not Found State -->
       <div v-else class="text-center py-12">
         <span class="material-symbols-outlined text-6xl text-slate-300">search_off</span>
-        <p class="text-slate-600 mt-4">Mapel tidak ditemukan</p>
+        <p class="text-slate-600 mt-4">Mata ujian tidak ditemukan</p>
         <button
           @click="handleBack"
           class="mt-4 text-sky-600 hover:text-sky-700 font-semibold">
@@ -131,7 +131,7 @@ onMounted(async () => {
   try {
     await mapelStore.fetchMapelById(mapelId)
   } catch (err) {
-    error.value = 'Gagal memuat detail mapel'
+    error.value = 'Gagal memuat detail mata ujian'
   }
 })
 
@@ -140,12 +140,12 @@ const handleEdit = () => {
 }
 
 const handleDelete = async () => {
-  if (await $confirm('Yakin ingin menghapus mapel ini? Tindakan ini tidak dapat dibatalkan.', { title: 'Konfirmasi Hapus' })) {
+  if (await $confirm('Yakin ingin menghapus mata ujian ini? Tindakan ini tidak dapat dibatalkan.', { title: 'Konfirmasi Hapus' })) {
     try {
       await mapelStore.deleteMapel(mapelId)
       router.push({ name: 'mapel.list' })
     } catch (err) {
-      error.value = mapelStore.error || 'Gagal menghapus mapel'
+      error.value = mapelStore.error || 'Gagal menghapus mata ujian'
     }
   }
 }

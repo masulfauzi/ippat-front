@@ -34,7 +34,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Mata Pelajaran -->
               <div class="border-l-4 border-blue-500 pl-4">
-                <p class="text-xs text-slate-500 uppercase font-semibold mb-1">Mata Pelajaran</p>
+                <p class="text-xs text-slate-500 uppercase font-semibold mb-1">Mata Ujian</p>
                 <p class="text-lg font-semibold text-slate-900">{{ selectedSoal.nama_mapel || mapelNama || '-' }}</p>
               </div>
 

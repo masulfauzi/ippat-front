@@ -46,14 +46,14 @@
           <!-- Mapel Selection -->
           <div>
             <label class="block text-sm font-semibold text-slate-900 mb-2">
-              Mata Pelajaran <span class="text-red-600">*</span>
+              Mata Ujian <span class="text-red-600">*</span>
             </label>
             <SearchableSelect
               :model-value="formData.mapel_id"
               @update:model-value="formData.mapel_id = $event"
               @blur="validateMapel"
               :options="mapelOptions"
-              placeholder="Cari mata pelajaran..."
+              placeholder="Cari mata ujian..."
               :has-error="!!errors.mapel_id" />
             <p v-if="errors.mapel_id" class="text-red-600 text-sm mt-1">{{ errors.mapel_id }}</p>
           </div>
@@ -165,7 +165,7 @@ const validateNamaBankSoal = () => {
 const validateMapel = () => {
   errors.mapel_id = ''
   if (!formData.mapel_id) {
-    errors.mapel_id = 'Mata pelajaran wajib dipilih'
+    errors.mapel_id = 'Mata ujian wajib dipilih'
   }
 }
 

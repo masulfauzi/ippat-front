@@ -12,9 +12,9 @@
       <!-- Page Title -->
       <div class="mb-8">
         <h1 class="text-3xl font-bold text-slate-900">
-          Edit Mapel <span v-if="!isLoadingDetail" class="text-sky-600">{{ selectedMapel?.nama_mapel }}</span>
+          Edit Mata Ujian <span v-if="!isLoadingDetail" class="text-sky-600">{{ selectedMapel?.nama_mapel }}</span>
         </h1>
-        <p class="text-slate-500 mt-1">Perbarui informasi mata pelajaran</p>
+        <p class="text-slate-500 mt-1">Perbarui informasi mata ujian</p>
       </div>
 
       <!-- Error Message -->
@@ -26,7 +26,7 @@
       <div v-if="isLoadingDetail" class="flex justify-center items-center py-12">
         <div class="text-center">
           <div class="inline-block w-10 h-10 border-4 border-sky-200 border-t-sky-600 rounded-full animate-spin"></div>
-          <p class="mt-3 text-slate-600">Memuat data mapel...</p>
+          <p class="mt-3 text-slate-600">Memuat data mata ujian...</p>
         </div>
       </div>
 
@@ -35,7 +35,7 @@
         <!-- Nama Mapel Field -->
         <div>
           <label class="block text-sm font-semibold text-slate-900 mb-2">
-            Nama Mata Pelajaran <span class="text-red-600">*</span>
+            Nama Mata Ujian <span class="text-red-600">*</span>
           </label>
           <input
             v-model="formData.nama_mapel"
@@ -52,7 +52,7 @@
         <!-- Kode Mapel Field -->
         <div>
           <label class="block text-sm font-semibold text-slate-900 mb-2">
-            Kode Mapel <span class="text-red-600">*</span>
+            Kode Mata Ujian <span class="text-red-600">*</span>
           </label>
           <input
             v-model="formData.kode_mapel"
@@ -71,11 +71,11 @@
           <label class="block text-sm font-semibold text-slate-900 mb-2">Deskripsi (Opsional)</label>
           <textarea
             v-model="formData.deskripsi"
-            placeholder="Deskripsi singkat tentang mata pelajaran ini"
+            placeholder="Deskripsi singkat tentang mata ujian ini"
             rows="4"
             class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all resize-none">
           </textarea>
-          <p class="text-slate-500 text-sm mt-1">Deskripsi membantu identifikasi mata pelajaran</p>
+          <p class="text-slate-500 text-sm mt-1">Deskripsi membantu identifikasi mata ujian</p>
         </div>
 
         <!-- Action Buttons -->
@@ -139,7 +139,7 @@ onMounted(async () => {
       formData.deskripsi = mapel.deskripsi || ''
     }
   } catch (err) {
-    error.value = 'Mapel tidak ditemukan'
+    error.value = 'Mata ujian tidak ditemukan'
   } finally {
     isLoadingDetail.value = false
   }
@@ -148,18 +148,18 @@ onMounted(async () => {
 const validateNamaMapel = () => {
   errors.nama_mapel = ''
   if (!formData.nama_mapel || formData.nama_mapel.trim().length === 0) {
-    errors.nama_mapel = 'Nama mapel wajib diisi'
+    errors.nama_mapel = 'Nama mata ujian wajib diisi'
   } else if (formData.nama_mapel.length > 255) {
-    errors.nama_mapel = 'Nama mapel maksimal 255 karakter'
+    errors.nama_mapel = 'Nama mata ujian maksimal 255 karakter'
   }
 }
 
 const validateKodeMapel = () => {
   errors.kode_mapel = ''
   if (!formData.kode_mapel || formData.kode_mapel.trim().length === 0) {
-    errors.kode_mapel = 'Kode mapel wajib diisi'
+    errors.kode_mapel = 'Kode mata ujian wajib diisi'
   } else if (formData.kode_mapel.length > 20) {
-    errors.kode_mapel = 'Kode mapel maksimal 20 karakter'
+    errors.kode_mapel = 'Kode mata ujian maksimal 20 karakter'
   }
 }
 
@@ -187,7 +187,7 @@ const handleSubmit = async () => {
 
     router.push({ name: 'mapel.list' })
   } catch (err) {
-    error.value = mapelStore.error || 'Gagal mengupdate mapel'
+    error.value = mapelStore.error || 'Gagal mengupdate mata ujian'
     isSubmitting.value = false
   }
 }

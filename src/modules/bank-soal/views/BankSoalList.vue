@@ -35,11 +35,11 @@
 
             <!-- Mapel Filter -->
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-2">Mata Pelajaran</label>
+              <label class="block text-sm font-medium text-slate-700 mb-2">Mata Ujian</label>
               <select
                 v-model="selectedMapel"
                 class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500">
-                <option value="">Semua Mapel</option>
+                <option value="">Semua Mata Ujian</option>
                 <option v-for="mapel in mapels" :key="mapel.id" :value="mapel.id">
                   {{ mapel.nama_mapel }}
                 </option>
@@ -123,7 +123,7 @@
               <tr>
                 <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">No.</th>
                 <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Nama Bank Soal</th>
-                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Mata Pelajaran</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Mata Ujian</th>
                 <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Jumlah Soal</th>
                 <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Nilai Minimal Kelulusan</th>
                 <th class="px-6 py-3 text-center text-xs font-semibold text-slate-600 uppercase">Aksi</th>
