@@ -98,7 +98,7 @@ const userInitials = computed(() => {
 })
 
 const pageTitle = computed(() => {
-    return isAdmin.value ? 'Exam Management' : 'Student Dashboard'
+    return isAdmin.value ? 'Exam Management' : 'Dashboard Peserta'
 })
 
 const handleLogout = () => {
